@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    platform: linux/amd64
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www/html
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: .
+      platforms: 
+        - linux/amd64
+      dockerfile: ./bin/php/Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+        PHP_EXTENSIONS: ${PHP_EXTENSIONS}
+    platform: linux/amd64
+    volumes:
+      - ./www:/var/www/html
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini
+    environment:
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - alpha-network
+    deploy:
+      replicas: 0
+    restart: "no"
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - alpha-network
+    deploy:
+      replicas: 0
+    restart: "no"
+
+  redis:
+    image: redis:alpine
+    platform: linux/amd64
+    ports:
+      - "6379:6379"
+
+networks:
+  alpha-network:
+
+# Variables to be defined in .env file
+# PHP_VERSION=7.4
+# PHP_EXTENSIONS=pdo,pdo_mysql
+# MYSQL_VERSION=5.7
+# POSTGRES_VERSION=13
+# DB_CONNECTION=mysql or postgres
+# DB_HOST=mysql or postgres
+# DB_PORT=3306 or 5432
+# DB_DATABASE=my_database
+# DB_USERNAME=user
+# DB_PASSWORD=password
