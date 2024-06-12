@@ -33,27 +33,26 @@ This command will build the Docker images and start the containers for Nginx, PH
 ## Directory Structure
 ```bash
 project-root/
-├── bin/
-│   ├── php/
-│   │   └── Dockerfile
-├── composer/
-├── config/
-│   ├── nginx/
-│   │   └── default.conf
-│   ├── php/
-│   │   └── php.ini
-├── data/
-│   ├── mysql/
-│   └── postgres/
-├── www/
-│   ├── index.php
-│   ├── composer.json
-│   └── composer.lock
-├── .env.example
-├── .env
-├── .gitignore
-├── .dockerignore
-└── docker-compose.yml
+├── README.md
+├── bin
+│   └── php
+│       └── Dockerfile
+├── config
+│   ├── nginx
+│   │   ├── default.conf
+│   │   ├── laravel.conf
+│   │   └── moodle.conf
+│   └── php
+│       └── php.ini
+├── data
+│   ├── certbot
+│   │   ├── conf
+│   │   └── www
+│   ├── mysql
+│   └── postgres
+├── docker-compose.yml
+└── www
+    └── info.php
 ```
 
 ## Running Composer
