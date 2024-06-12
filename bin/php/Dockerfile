@@ -3,7 +3,7 @@ ARG PHP_VERSION
 ARG PHP_EXTENSIONS
 
 # Use Alpine base image with specified PHP version
-FROM php:${PHP_VERSION}-fpm-alpine
+FROM php:${PHP_VERSION}-fpm-alpine AS builder
 
 # Install dependencies and PHP extensions
 RUN apk add --no-cache \
@@ -44,9 +44,8 @@ fi
 
 WORKDIR /var/www/html
 
-# Copy composer files and run composer install
-COPY ./www/composer.json ./www/composer.lock /var/www/html/
-RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-interaction
+# run composer install
+RUN [ -e ./composer.json ] && [ -e ./composer.lock ] && composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-interaction || true
 
 # Install application dependencies
-RUN composer dump-autoload --optimize
+# RUN composer dump-autoload --optimize

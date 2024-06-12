@@ -31,6 +31,10 @@ data/mysql/*
 data/postgres/*
 !data/postgres/.gitkeep
 
+# Ignore data from www
+www/*
+!www/info.php
+
 # Ignore editor specific files
 .vscode/
 .idea/

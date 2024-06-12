@@ -1,19 +1,20 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   nginx:
     image: nginx:alpine
     platform: linux/amd64
+    container_name: alpha-nginx
     ports:
       - "80:80"
-      # - "443:443"
+      - "443:443"
     volumes:
       - ./www:/var/www/html
       - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     environment:
-      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
+      - LETSENCRYPT_DOMAIN=${LETSENCRYPT_DOMAIN}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     depends_on:
       - php
@@ -29,6 +30,7 @@ services:
       args:
         PHP_VERSION: ${PHP_VERSION}
         PHP_EXTENSIONS: ${PHP_EXTENSIONS}
+    container_name: alpha-php
     platform: linux/amd64
     volumes:
       - ./www:/var/www/html
@@ -46,6 +48,7 @@ services:
   mysql:
     image: mysql:${MYSQL_VERSION}
     platform: linux/amd64
+    container_name: alpha-mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -58,11 +61,12 @@ services:
     networks:
       - alpha-network
     deploy:
-      replicas: 0
+      replicas: 1
     restart: "no"
 
   postgres:
     image: postgres:${POSTGRES_VERSION}
+    container_name: alpha-postgres
     platform: linux/amd64
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -75,11 +79,12 @@ services:
     networks:
       - alpha-network
     deploy:
-      replicas: 0
+      replicas: 1
     restart: "no"
 
   redis:
     image: redis:alpine
+    container_name: alpha-redis
     platform: linux/amd64
     ports:
       - "6379:6379"
@@ -88,6 +93,8 @@ services:
 
   certbot:
     image: certbot/certbot
+    # platform: linux/amd64
+    container_name: alpha-certbot
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
@@ -100,4 +107,4 @@ services:
 
 networks:
   alpha-network:
-    internal: true
+    name: alpha-network
