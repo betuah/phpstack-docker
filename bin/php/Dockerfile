@@ -43,3 +43,10 @@ RUN if [ -n "$PHP_EXTENSIONS" ]; then \
 fi
 
 WORKDIR /var/www/html
+
+# Copy composer files and run composer install
+COPY ./www/composer.json ./www/composer.lock /var/www/html/
+RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-interaction
+
+# Install application dependencies
+RUN composer dump-autoload --optimize
