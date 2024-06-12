@@ -112,6 +112,32 @@ The PHP configuration file is located at **`config/php/php.ini`**. You can modif
 ## Nginx Configuration
 The Nginx configuration file is located at **`config/nginx/default.conf`**. You can modify this file to change the server settings as needed.
 
+## Adding HTTPS Support
+
+To enable HTTPS support using Let's Encrypt, follow these steps:
+
+### 1. Update the .env File
+
+Open the `.env` file and set `ENABLE_HTTPS=true`. Make sure to also set `LETSENCRYPT_DOMAIN` to your domain name and `LETSENCRYPT_EMAIL` to your email address.
+
+Example:
+```env
+ENABLE_HTTPS=true
+LETSENCRYPT_DOMAIN=yourdomain.com
+LETSENCRYPT_EMAIL=your-email@example.com
+```
+
+### 2. Update nginx and docker-compose configuration
+Uncoment https configuration section in **`config/nginx/default.conf`**
+Uncoment https port in nginx section **`docker-compose.yml`**
+
+### 3. Build and Run the Containers
+Run the following command to build and start the containers:
+```sh
+docker-compose up --build
+```
+Certbot will automatically generate Let's Encrypt certificates for the specified domain. Nginx will be configured to use these certificates to enable HTTPS.
+
 ## Data Persistence
 The database data is persisted in the data directory:
 - MySQL data is stored in data/mysql.
