@@ -31,6 +31,7 @@ docker compose up --build
 This command will build the Docker images and start the containers for Nginx, PHP, MySQL/PostgreSQL, and Redis.
 
 ## Directory Structure
+```bash
 project-root/
 ├── bin/
 │   ├── php/
@@ -53,6 +54,7 @@ project-root/
 ├── .gitignore
 ├── .dockerignore
 └── docker-compose.yml
+```
 
 ## Running Composer
 ### Install Dependencies
